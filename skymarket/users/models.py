@@ -26,3 +26,4 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=50)
     role = models.CharField(max_length=9, choices=ROLES, default='user')
     image = models.ImageField()
+
