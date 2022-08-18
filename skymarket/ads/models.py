@@ -1,3 +1,4 @@
+import django_filters
 from django.conf import settings
 from django.db import models
 
@@ -24,3 +25,11 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class AdFilter(django_filters.rest_framework.FilterSet):
+    title = django_filters.CharFilter(field_name="title", lookup_expr="icontains", )
+
+    class Meta:
+        model = Ad
+        fields = ("title",)
