@@ -1,3 +1,4 @@
+from phonenumber_field import serializerfields
 from rest_framework import serializers
 from ads.models import Ad, Comment
 
@@ -7,10 +8,10 @@ from ads.models import Ad, Comment
 # TODO сериалайзер для модели
 class CommentSerializer(serializers.ModelSerializer):
 
-    author_first_name = serializers.CharField(source="author.first_name", read_only=True)
-    author_last_name = serializers.CharField(source="author.last_name", read_only=True)
-    author_id = serializers.IntegerField(source="author.id", read_only=True)
-    pk = serializers.IntegerField(source="id", read_only=True)
+    author_first_name = serializers.ReadOnlyField(source="author.first_name")
+    author_last_name = serializers.ReadOnlyField(source="author.last_name")
+    author_id = serializers.ReadOnlyField(source="author.id")
+    ad_id = serializers.ReadOnlyField(source="ad.id")
 
     class Meta:
         model = Comment
@@ -19,24 +20,18 @@ class CommentSerializer(serializers.ModelSerializer):
 
 # TODO сериалайзер для модели
 class AdSerializer(serializers.ModelSerializer):
-
-    author_first_name = serializers.CharField(source="author.first_name", read_only=True)
-    author_last_name = serializers.CharField(source="author.last_name", read_only=True)
-    author_id = serializers.IntegerField(source="author.id", read_only=True)
-    pk = serializers.IntegerField(source="id", read_only=True)
-
     class Meta:
         model = Ad
-        fields = '__all__'
+        fields = ("pk", "image", "title", "price", "description")
 
 
 # TODO сериалайзер для модели
 class AdDetailSerializer(serializers.ModelSerializer):
 
-    author_first_name = serializers.CharField(source="author.first_name", read_only=True)
-    author_last_name = serializers.CharField(source="author.last_name", read_only=True)
-    author_id = serializers.IntegerField(source="author.id", read_only=True)
-    pk = serializers.IntegerField(source="id", read_only=True)
+    author_first_name = serializers.ReadOnlyField(source="author.first_name")
+    author_last_name = serializers.ReadOnlyField(source="author.last_name")
+    author_id = serializers.ReadOnlyField(source="author.id")
+    phone = serializerfields.PhoneNumberField(source="ad.phone", read_only=True)
 
     class Meta:
         model = Ad

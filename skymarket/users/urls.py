@@ -12,4 +12,3 @@ urlpatterns = [
     path("", include(users_router.urls))
 ]
 
-urlpatterns += users_router.urls

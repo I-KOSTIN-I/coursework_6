@@ -43,13 +43,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "djoser",
+    "phonenumber_field",
+    "drf_spectacular",
+    "corsheaders",
+    "django_filters",
     "users",
     "ads",
     "redoc",
-    "corsheaders",
-    "drf_spectacular",
-    "djoser",
-    "django_filters",
 ]
 
 
@@ -90,13 +91,21 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PGE_SIZE": 100
 }
+
 # TODO здесь мы настраиваем Djoser
 DJOSER = {
     'SERIALIZERS': {
-        'user_create': 'users.serializers.UserRegistrationSerializer'
+        'user_create': 'users.serializers.UserRegistrationSerializer',
+        'current_user': 'users.serializers.CurrentUserSerializer',
     },
-    'LOGIN_FIELD': 'email'
+    'LOGIN_FIELD': 'email',
+    'PASSWORD_RESET_CONFIRM_URL': 'api/users/reset_password_confirm/{uid}/{token}',
+    'EMAIL': {
+        'password_reset': 'users.email.PasswordResetEmail',
+    }
 }
 
 # Database
@@ -105,12 +114,12 @@ DJOSER = {
 # TODO здесь необходимо настроить подключение к БД
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'skymarket',
-        'USER': 'skymarket',
-        'PASSWORD': 'skymarket',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': os.environ.get('DB_ENGINE'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
@@ -180,3 +189,5 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'My coursework_6',
     'VERSION': '1.0.0',
 }
+
+AUTH_USER_MODEL = 'users.User'

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, AbstractUser
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext_lazy as _
@@ -22,12 +22,17 @@ class User(AbstractBaseUser):
     # TODO переопределение пользователя.
     # TODO подробности также можно поискать в рекоммендациях к проекту
 
+    objects = UserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone', "role"]
+
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20)
+    phone = PhoneNumberField()
     email = models.EmailField(max_length=100, unique=True)
-    role = models.CharField(max_length=9, choices=UserRoles.ROLES, default='user')
-    image = models.ImageField()
+    role = models.CharField(max_length=20, choices=UserRoles.ROLES, default='user')
+    image = models.ImageField(upload_to='users_avatars/', null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
 
@@ -45,8 +50,6 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return self.is_admin
 
-    objects = UserManager()
-
     @property
     def is_admin(self):
         return self.role == UserRoles.ADMIN
@@ -55,11 +58,7 @@ class User(AbstractBaseUser):
     def is_user(self):
         return self.role == UserRoles.USER
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone', "role"]
-
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
-
-
+        ordering = ('id',)
